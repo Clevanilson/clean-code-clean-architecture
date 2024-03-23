@@ -1,0 +1,12 @@
+{
+  "name": "clean-code-clean-architecture",
+  "version": "0.0.1",
+  "description": "Curso branas.io",
+  "keywords": [
+    "clean code",
+    "clean architecture",
+    "design patterns"
+  ],
+  "author": "Clevanilson da Silva Oliveira",
+  "license": "ISC"
+}
