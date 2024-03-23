@@ -8,5 +8,8 @@
     "design patterns"
   ],
   "author": "Clevanilson da Silva Oliveira",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.0.11"
+  }
 }
