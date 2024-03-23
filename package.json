@@ -10,6 +10,7 @@
   "author": "Clevanilson da Silva Oliveira",
   "license": "ISC",
   "devDependencies": {
+    "@commitlint/cli": "^19.2.1",
     "husky": "^9.0.11"
   }
 }
