@@ -11,6 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "@commitlint/cli": "^19.2.1",
+    "@commitlint/config-angular": "^19.1.0",
     "husky": "^9.0.11"
   }
 }
