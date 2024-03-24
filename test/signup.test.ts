@@ -1,5 +1,5 @@
 import { AccountDAODatabase } from "../src/AccountDAODatabase";
-import { getAccount } from "../src/getAccount";
+import { GetAccountById } from "../src/GetAccount";
 import { Signup } from "../src/Signup";
 
 test("Should create a new account for a passenger", async () => {
@@ -9,10 +9,10 @@ test("Should create a new account for a passenger", async () => {
     cpf: "11144466610",
     isPassenger: true
   };
-  const { sut } = setup();
+  const { sut, getAccountById } = setup();
   const outputSignup = await sut.execute(input);
   expect(outputSignup.accountId).toEqual(expect.any(String));
-  const outputGetAccount = await getAccount(outputSignup.accountId);
+  const outputGetAccount = await getAccountById.execute(outputSignup.accountId);
   expect(outputGetAccount.name).toEqual(input.name);
   expect(outputGetAccount.email).toEqual(input.email);
   expect(outputGetAccount.cpf).toEqual(input.cpf);
@@ -27,10 +27,10 @@ test("Should create a new account for a driver", async () => {
     isDriver: true,
     carPlate: "AAA3333"
   };
-  const { sut } = setup();
+  const { sut, getAccountById } = setup();
   const outputSignup = await sut.execute(input);
   expect(outputSignup.accountId).toEqual(expect.any(String));
-  const outputGetAccount = await getAccount(outputSignup.accountId);
+  const outputGetAccount = await getAccountById.execute(outputSignup.accountId);
   expect(outputGetAccount.name).toEqual(input.name);
   expect(outputGetAccount.email).toEqual(input.email);
   expect(outputGetAccount.cpf).toEqual(input.cpf);
@@ -99,6 +99,7 @@ test("Should not create an driver account with invalid car plate", async () => {
 
 function setup() {
   const accountDAO = new AccountDAODatabase();
+  const getAccountById = new GetAccountById(accountDAO);
   const sut = new Signup(accountDAO);
-  return { sut };
+  return { sut, getAccountById };
 }
