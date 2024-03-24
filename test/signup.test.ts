@@ -1,5 +1,5 @@
 import { getAccount } from "../src/getAccount";
-import { signup } from "../src/signup";
+import { Signup } from "../src/Signup";
 
 test("Should create a new account for a passenger", async () => {
   const input = {
@@ -8,7 +8,8 @@ test("Should create a new account for a passenger", async () => {
     cpf: "11144466610",
     isPassenger: true
   };
-  const outputSignup = await signup(input);
+  const { sut } = setup();
+  const outputSignup = await sut.execute(input);
   expect(outputSignup.accountId).toEqual(expect.any(String));
   const outputGetAccount = await getAccount(outputSignup.accountId);
   expect(outputGetAccount.name).toEqual(input.name);
@@ -25,7 +26,8 @@ test("Should create a new account for a driver", async () => {
     isDriver: true,
     carPlate: "AAA3333"
   };
-  const outputSignup = await signup(input);
+  const { sut } = setup();
+  const outputSignup = await sut.execute(input);
   expect(outputSignup.accountId).toEqual(expect.any(String));
   const outputGetAccount = await getAccount(outputSignup.accountId);
   expect(outputGetAccount.name).toEqual(input.name);
@@ -42,7 +44,8 @@ test("Should not create an account with invalid name", async () => {
     cpf: "11144466610",
     isPassenger: true
   };
-  await expect(() => signup(input)).rejects.toThrow("Invalid name");
+  const { sut } = setup();
+  await expect(() => sut.execute(input)).rejects.toThrow("Invalid name");
 });
 
 test("Should not create an account with invalid email", async () => {
@@ -52,7 +55,8 @@ test("Should not create an account with invalid email", async () => {
     cpf: "11144466610",
     isPassenger: true
   };
-  await expect(() => signup(input)).rejects.toThrow("Invalid email");
+  const { sut } = setup();
+  await expect(() => sut.execute(input)).rejects.toThrow("Invalid email");
 });
 
 test("Should not create an account with invalid CPF", async () => {
@@ -62,7 +66,8 @@ test("Should not create an account with invalid CPF", async () => {
     cpf: "111444666",
     isPassenger: true
   };
-  await expect(() => signup(input)).rejects.toThrow("Invalid CPF");
+  const { sut } = setup();
+  await expect(() => sut.execute(input)).rejects.toThrow("Invalid CPF");
 });
 
 test("Should not create an account if account already exists", async () => {
@@ -72,8 +77,11 @@ test("Should not create an account if account already exists", async () => {
     cpf: "11144466610",
     isPassenger: true
   };
-  await signup(input);
-  await expect(() => signup(input)).rejects.toThrow("Account already exists");
+  const { sut } = setup();
+  await sut.execute(input);
+  await expect(() => sut.execute(input)).rejects.toThrow(
+    "Account already exists"
+  );
 });
 
 test("Should not create an driver account with invalid car plate", async () => {
@@ -84,5 +92,11 @@ test("Should not create an driver account with invalid car plate", async () => {
     isDriver: true,
     carPlate: ""
   };
-  await expect(() => signup(input)).rejects.toThrow("Invalid car plate");
+  const { sut } = setup();
+  await expect(() => sut.execute(input)).rejects.toThrow("Invalid car plate");
 });
+
+function setup() {
+  const sut = new Signup();
+  return { sut };
+}
