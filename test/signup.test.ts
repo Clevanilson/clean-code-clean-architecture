@@ -1,3 +1,4 @@
+import { AccountDAODatabase } from "../src/AccountDAODatabase";
 import { getAccount } from "../src/getAccount";
 import { Signup } from "../src/Signup";
 
@@ -97,6 +98,7 @@ test("Should not create an driver account with invalid car plate", async () => {
 });
 
 function setup() {
-  const sut = new Signup();
+  const accountDAO = new AccountDAODatabase();
+  const sut = new Signup(accountDAO);
   return { sut };
 }
