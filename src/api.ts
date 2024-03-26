@@ -1,7 +1,8 @@
 import express from "express";
-import { AccountDAODatabase } from "./AccountDAODatabase";
+import { AccountDAODatabase, query } from "./AccountDAODatabase";
 import { Signup } from "./Signup";
 import { GetAccountById } from "./GetAccount";
+import crypto from "crypto";
 
 const app = express();
 
@@ -19,6 +20,36 @@ app.get("/accounts/:id", async (req, res) => {
   const signup = new GetAccountById(accountDAO);
   const output = await signup.execute(req.params.id);
   return res.json(output);
+});
+
+app.post("/rides/request", async (req, res) => {
+  const rideId = crypto.randomUUID();
+  await query(
+    `
+    INSERT INTO
+    cccat15.ride 
+    (ride_id, passenger_id, from_lat, from_long, to_lat, to_long, status, date) 
+    VALUES 
+    ($1, $2, $3, $4, $5, $6, $7, $8);`,
+    [
+      rideId,
+      req.body.passengerId,
+      req.body.fromLat,
+      req.body.fromLong,
+      req.body.toLat,
+      req.body.toLong,
+      "requested",
+      new Date()
+    ]
+  );
+  res.json({ rideId });
+});
+
+app.get("/rides/:id", async (req, res) => {
+  const rides = await query("SELECT * FROM cccat15.ride WHERE ride_id = $1", [
+    req.params.id
+  ]);
+  return res.json(rides?.rows[0]);
 });
 
 app.listen(3000, () => {
