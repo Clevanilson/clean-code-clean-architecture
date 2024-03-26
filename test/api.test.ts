@@ -1,5 +1,7 @@
 import axios from "axios";
 
+axios.defaults.validateStatus = () => true;
+
 test("Should create a new account for a passenger", async () => {
   const input = {
     name: "Passenger Doe",
@@ -19,7 +21,7 @@ test("Should create a new account for a passenger", async () => {
   expect(responseGetAccount.data.is_passenger).toEqual(input.isPassenger);
 });
 
-test.only("Should request a ride", async () => {
+test("Should request a ride", async () => {
   const inputSignup = {
     name: "Passenger Doe",
     email: `john.passenger${Math.random()}@mail.com`,
@@ -56,4 +58,31 @@ test.only("Should request a ride", async () => {
   expect(responseGetRide.data.to_lat).toBe(inputRequestRide.toLat.toString());
   expect(responseGetRide.data.to_long).toBe(inputRequestRide.toLong.toString());
   expect(responseGetRide.data.status).toBe("requested");
+});
+
+test("Should not request a ride if user is not a passenger", async () => {
+  const inputSignup = {
+    name: "Passenger Doe",
+    email: `john.passenger${Math.random()}@mail.com`,
+    cpf: "11144466610",
+    isDriver: true,
+    carPlate: "AAA9999"
+  };
+  const responseSignup = await axios.post(
+    "http://localhost:3000/signup",
+    inputSignup
+  );
+  const inputRequestRide = {
+    passengerId: responseSignup.data.accountId,
+    fromLat: -27.584905257808835,
+    fromLong: -48.545022195325124,
+    toLat: -27.496887588317275,
+    toLong: -48.522234807851476
+  };
+  const responseRequestRide = await axios.post(
+    "http://localhost:3000/rides/request",
+    inputRequestRide
+  );
+  expect(responseRequestRide.status).toEqual(422);
+  expect(responseRequestRide.data.message).toEqual("User must be a passenger");
 });

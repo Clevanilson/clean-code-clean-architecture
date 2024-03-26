@@ -24,6 +24,16 @@ app.get("/accounts/:id", async (req, res) => {
 
 app.post("/rides/request", async (req, res) => {
   const rideId = crypto.randomUUID();
+  const { passengerId } = req.body;
+  const account = await query(
+    `SELECT is_passenger FROM cccat15.account WHERE account_id = $1`,
+    [passengerId]
+  );
+  if (!account?.rows[0]?.is_passenger) {
+    return res.status(422).json({
+      message: "User must be a passenger"
+    });
+  }
   await query(
     `
     INSERT INTO
@@ -42,7 +52,7 @@ app.post("/rides/request", async (req, res) => {
       new Date()
     ]
   );
-  res.json({ rideId });
+  return res.json({ rideId });
 });
 
 app.get("/rides/:id", async (req, res) => {
