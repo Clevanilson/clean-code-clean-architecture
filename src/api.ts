@@ -2,7 +2,7 @@ import express from "express";
 import { AccountDAODatabase, query } from "./AccountDAODatabase";
 import { Signup } from "./Signup";
 import { GetAccountById } from "./GetAccount";
-import crypto from "crypto";
+import { RequestRide } from "./RequestRide";
 
 const app = express();
 
@@ -23,48 +23,14 @@ app.get("/accounts/:id", async (req, res) => {
 });
 
 app.post("/rides/request", async (req, res) => {
-  const rideId = crypto.randomUUID();
-  const { passengerId } = req.body;
-  const account = await query(
-    `SELECT is_passenger FROM cccat15.account WHERE account_id = $1;`,
-    [passengerId]
-  );
-  if (!account?.rows[0]?.is_passenger) {
-    return res.status(422).json({
-      message: "User must be a passenger"
-    });
+  try {
+    const requestRide = new RequestRide();
+    const output = await requestRide.execute(req.body);
+    return res.json(output);
+  } catch (error: any) {
+    console.log(error.message);
+    return res.status(422).json({ message: error.message });
   }
-  const ride = await query(
-    `SELECT 
-    ride_id FROM cccat15.ride
-    WHERE passenger_id = $1 AND status = $2`,
-    [passengerId, "requested"]
-  );
-  console.log(ride?.rows);
-  if (ride?.rows[0]) {
-    return res.status(422).json({
-      message: "User has an active ride"
-    });
-  }
-  await query(
-    `
-    INSERT INTO
-    cccat15.ride 
-    (ride_id, passenger_id, from_lat, from_long, to_lat, to_long, status, date) 
-    VALUES 
-    ($1, $2, $3, $4, $5, $6, $7, $8);`,
-    [
-      rideId,
-      req.body.passengerId,
-      req.body.fromLat,
-      req.body.fromLong,
-      req.body.toLat,
-      req.body.toLong,
-      "requested",
-      new Date()
-    ]
-  );
-  return res.json({ rideId });
 });
 
 app.get("/rides/:id", async (req, res) => {
