@@ -86,3 +86,30 @@ test("Should not request a ride if user is not a passenger", async () => {
   expect(responseRequestRide.status).toEqual(422);
   expect(responseRequestRide.data.message).toEqual("User must be a passenger");
 });
+
+test("Should not request a ride if user has an active ride", async () => {
+  const inputSignup = {
+    name: "Passenger Doe",
+    email: `john.passenger${Math.random()}@mail.com`,
+    cpf: "11144466610",
+    isPassenger: true
+  };
+  const responseSignup = await axios.post(
+    "http://localhost:3000/signup",
+    inputSignup
+  );
+  const inputRequestRide = {
+    passengerId: responseSignup.data.accountId,
+    fromLat: -27.584905257808835,
+    fromLong: -48.545022195325124,
+    toLat: -27.496887588317275,
+    toLong: -48.522234807851476
+  };
+  await axios.post("http://localhost:3000/rides/request", inputRequestRide);
+  const responseRequestRide = await axios.post(
+    "http://localhost:3000/rides/request",
+    inputRequestRide
+  );
+  expect(responseRequestRide.status).toEqual(422);
+  expect(responseRequestRide.data.message).toEqual("User has an active ride");
+});

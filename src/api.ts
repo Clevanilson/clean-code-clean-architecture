@@ -26,12 +26,24 @@ app.post("/rides/request", async (req, res) => {
   const rideId = crypto.randomUUID();
   const { passengerId } = req.body;
   const account = await query(
-    `SELECT is_passenger FROM cccat15.account WHERE account_id = $1`,
+    `SELECT is_passenger FROM cccat15.account WHERE account_id = $1;`,
     [passengerId]
   );
   if (!account?.rows[0]?.is_passenger) {
     return res.status(422).json({
       message: "User must be a passenger"
+    });
+  }
+  const ride = await query(
+    `SELECT 
+    ride_id FROM cccat15.ride
+    WHERE passenger_id = $1 AND status = $2`,
+    [passengerId, "requested"]
+  );
+  console.log(ride?.rows);
+  if (ride?.rows[0]) {
+    return res.status(422).json({
+      message: "User has an active ride"
     });
   }
   await query(
