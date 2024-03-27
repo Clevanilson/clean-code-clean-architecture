@@ -47,16 +47,12 @@ test("Should request a ride", async () => {
   const responseGetRide = await axios.get(
     `http://localhost:3000/rides/${responseRequestRide.data.rideId}`
   );
-  expect(responseGetRide.data.ride_id).toBe(responseRequestRide.data.rideId);
-  expect(responseGetRide.data.passenger_id).toBe(responseSignup.data.accountId);
-  expect(responseGetRide.data.from_lat).toBe(
-    inputRequestRide.fromLat.toString()
-  );
-  expect(responseGetRide.data.from_long).toBe(
-    inputRequestRide.fromLong.toString()
-  );
-  expect(responseGetRide.data.to_lat).toBe(inputRequestRide.toLat.toString());
-  expect(responseGetRide.data.to_long).toBe(inputRequestRide.toLong.toString());
+  expect(responseGetRide.data.rideId).toBe(responseRequestRide.data.rideId);
+  expect(responseGetRide.data.passengerId).toBe(responseSignup.data.accountId);
+  expect(responseGetRide.data.fromLat).toBe(inputRequestRide.fromLat);
+  expect(responseGetRide.data.fromLong).toBe(inputRequestRide.fromLong);
+  expect(responseGetRide.data.toLat).toBe(inputRequestRide.toLat);
+  expect(responseGetRide.data.toLong).toBe(inputRequestRide.toLong);
   expect(responseGetRide.data.status).toBe("requested");
 });
 

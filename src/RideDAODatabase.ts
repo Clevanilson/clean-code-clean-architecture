@@ -4,7 +4,20 @@ import { RideDAO } from "./RideDAO";
 export class RideDAODatabase implements RideDAO {
   async getById(id: string): Promise<any> {
     const SQL = `SELECT * FROM cccat15.ride WHERE ride_id = $1;`;
-    const activeRide = await query(SQL, [id]);
+    const rides = await query(SQL, [id]);
+    if (!rides?.rows[0]) return;
+    const [ride] = rides.rows;
+    console.log(ride);
+    return {
+      rideId: ride.ride_id,
+      passengerId: ride.passenger_id,
+      fromLat: Number(ride.from_lat),
+      fromLong: Number(ride.from_long),
+      toLat: Number(ride.to_lat),
+      toLong: Number(ride.to_long),
+      status: ride.status,
+      date: ride.date
+    };
   }
 
   async getActiveByPassengerId(passengerId: string): Promise<any> {

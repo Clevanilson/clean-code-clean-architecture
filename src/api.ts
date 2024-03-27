@@ -4,6 +4,7 @@ import { Signup } from "./Signup";
 import { GetAccountById } from "./GetAccount";
 import { RequestRide } from "./RequestRide";
 import { RideDAODatabase } from "./RideDAODatabase";
+import { GetRide } from "./GetRide";
 
 const app = express();
 
@@ -31,16 +32,15 @@ app.post("/rides/request", async (req, res) => {
     const output = await requestRide.execute(req.body);
     return res.json(output);
   } catch (error: any) {
-    console.log(error.message);
     return res.status(422).json({ message: error.message });
   }
 });
 
 app.get("/rides/:id", async (req, res) => {
-  const rides = await query("SELECT * FROM cccat15.ride WHERE ride_id = $1", [
-    req.params.id
-  ]);
-  return res.json(rides?.rows[0]);
+  const rideDAO = new RideDAODatabase();
+  const getRide = new GetRide(rideDAO);
+  const ride = await getRide.execute(req.params.id);
+  return res.json(ride);
 });
 
 app.listen(3000, () => {
