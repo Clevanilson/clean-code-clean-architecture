@@ -3,6 +3,7 @@ import { AccountDAODatabase, query } from "./AccountDAODatabase";
 import { Signup } from "./Signup";
 import { GetAccountById } from "./GetAccount";
 import { RequestRide } from "./RequestRide";
+import { RideDAODatabase } from "./RideDAODatabase";
 
 const app = express();
 
@@ -24,7 +25,9 @@ app.get("/accounts/:id", async (req, res) => {
 
 app.post("/rides/request", async (req, res) => {
   try {
-    const requestRide = new RequestRide();
+    const rideDAO = new RideDAODatabase();
+    const accountDAO = new AccountDAODatabase();
+    const requestRide = new RequestRide(rideDAO, accountDAO);
     const output = await requestRide.execute(req.body);
     return res.json(output);
   } catch (error: any) {

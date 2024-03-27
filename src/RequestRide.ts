@@ -1,44 +1,28 @@
 import { query } from "./AccountDAODatabase";
 import crypto from "crypto";
+import { RideDAO } from "./RideDAO";
+import { AccountDAO } from "./AccountDAO";
 
 export class RequestRide {
+  constructor(
+    private readonly rideDAO: RideDAO,
+    private readonly accountDAO: AccountDAO
+  ) {}
+
   async execute(input: Input): Promise<Output> {
     const rideId = crypto.randomUUID();
+    const ride = {
+      ...input,
+      rideId,
+      status: "requested",
+      data: new Date()
+    };
     const { passengerId } = input;
-    const account = await query(
-      `SELECT is_passenger FROM cccat15.account WHERE account_id = $1;`,
-      [passengerId]
-    );
-    if (!account?.rows[0]?.is_passenger) {
-      throw new Error("User must be a passenger");
-    }
-    const activeRide = await query(
-      `SELECT 
-    ride_id FROM cccat15.ride
-    WHERE passenger_id = $1 AND status = $2`,
-      [passengerId, "requested"]
-    );
-    if (activeRide?.rows[0]) {
-      throw new Error("User has an active ride");
-    }
-    await query(
-      `
-    INSERT INTO
-    cccat15.ride 
-    (ride_id, passenger_id, from_lat, from_long, to_lat, to_long, status, date) 
-    VALUES 
-    ($1, $2, $3, $4, $5, $6, $7, $8);`,
-      [
-        rideId,
-        input.passengerId,
-        input.fromLat.toString(),
-        input.fromLong.toString(),
-        input.toLat.toString(),
-        input.toLong.toString(),
-        "requested",
-        new Date().toISOString()
-      ]
-    );
+    const account = await this.accountDAO.getById(passengerId);
+    if (!account?.is_passenger) throw new Error("User must be a passenger");
+    const activeRide = await this.rideDAO.getActiveByPassengerId(passengerId);
+    if (activeRide) throw new Error("User has an active ride");
+    this.rideDAO.save(ride);
     return { rideId };
   }
 }
