@@ -18,7 +18,7 @@ test("Should create a new account for a passenger", async () => {
   expect(responseGetAccount.data.name).toEqual(input.name);
   expect(responseGetAccount.data.email).toEqual(input.email);
   expect(responseGetAccount.data.cpf).toEqual(input.cpf);
-  expect(responseGetAccount.data.is_passenger).toEqual(input.isPassenger);
+  expect(responseGetAccount.data.isPassenger).toEqual(input.isPassenger);
 });
 
 test("Should request a ride", async () => {
@@ -69,7 +69,7 @@ test("Should not request a ride if user is not a passenger", async () => {
     inputSignup
   );
   const inputRequestRide = {
-    passengerId: responseSignup.data.accountId,
+    passengerId: responseSignup.data,
     fromLat: -27.584905257808835,
     fromLong: -48.545022195325124,
     toLat: -27.496887588317275,

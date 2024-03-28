@@ -1,18 +1,27 @@
-import { AccountDAO } from "./AccountDAO";
-import { validateCpf } from "./validateCpf";
+import { Account } from "./Account";
+import { AccountRepository } from "./AccountRepository";
 
 export class Signup {
-  constructor(private readonly accountDAO: AccountDAO) {}
+  constructor(private readonly accountRepository: AccountRepository) {}
 
-  async execute(input: any): Promise<any> {
-    const existingAccount = await this.accountDAO.getByEmail(input.email);
+  async execute(input: any): Promise<Output> {
+    const existingAccount = await this.accountRepository.getByEmail(
+      input.email
+    );
     if (existingAccount) throw new Error("Account already exists");
-    if (!input.name.match(/[a-zA-Z] [a-zA-Z]+/))
-      throw new Error("Invalid name");
-    if (!input.email.match(/^(.+)@(.+)$/)) throw new Error("Invalid email");
-    if (!validateCpf(input.cpf)) throw new Error("Invalid CPF");
-    if (input.isDriver && !input.carPlate.match(/[A-Z]{3}[0-9]{4}/))
-      throw new Error("Invalid car plate");
-    return this.accountDAO.save(input);
+    const account = Account.create(
+      input.name,
+      input.email,
+      input.cpf,
+      !!input.isPassenger,
+      !!input.isDriver,
+      input.carPlate
+    );
+    await this.accountRepository.save(account);
+    return { accountId: account.accountId };
   }
 }
+
+type Output = {
+  accountId: string;
+};

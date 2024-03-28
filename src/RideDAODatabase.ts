@@ -1,4 +1,4 @@
-import { query } from "./AccountDAODatabase";
+import { query } from "./AccountRepositoryDatabase";
 import { RideDAO } from "./RideDAO";
 
 export class RideDAODatabase implements RideDAO {

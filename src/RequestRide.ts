@@ -1,12 +1,12 @@
-import { query } from "./AccountDAODatabase";
+import { query } from "./AccountRepositoryDatabase";
 import crypto from "crypto";
 import { RideDAO } from "./RideDAO";
-import { AccountDAO } from "./AccountDAO";
+import { AccountRepository } from "./AccountRepository";
 
 export class RequestRide {
   constructor(
     private readonly rideDAO: RideDAO,
-    private readonly accountDAO: AccountDAO
+    private readonly accountRepository: AccountRepository
   ) {}
 
   async execute(input: Input): Promise<Output> {
@@ -18,8 +18,8 @@ export class RequestRide {
       data: new Date()
     };
     const { passengerId } = input;
-    const account = await this.accountDAO.getById(passengerId);
-    if (!account?.is_passenger) throw new Error("User must be a passenger");
+    const account = await this.accountRepository.getById(passengerId);
+    if (!account?.isPassenger) throw new Error("User must be a passenger");
     const activeRide = await this.rideDAO.getActiveByPassengerId(passengerId);
     if (activeRide) throw new Error("User has an active ride");
     this.rideDAO.save(ride);
