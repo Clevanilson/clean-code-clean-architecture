@@ -2,9 +2,9 @@ import express from "express";
 import { Signup } from "./Signup";
 import { GetAccountById } from "./GetAccount";
 import { RequestRide } from "./RequestRide";
-import { RideDAODatabase } from "./RideDAODatabase";
 import { GetRide } from "./GetRide";
 import { AccountRepositoryDatabase } from "./AccountRepositoryDatabase";
+import { RideRepositoryDatebase } from "./RideRepositoryDatebase";
 
 const app = express();
 
@@ -26,9 +26,9 @@ app.get("/accounts/:id", async (req, res) => {
 
 app.post("/rides/request", async (req, res) => {
   try {
-    const rideDAO = new RideDAODatabase();
+    const rideRepository = new RideRepositoryDatebase();
     const accountRepository = new AccountRepositoryDatabase();
-    const requestRide = new RequestRide(rideDAO, accountRepository);
+    const requestRide = new RequestRide(rideRepository, accountRepository);
     const output = await requestRide.execute(req.body);
     return res.json(output);
   } catch (error: any) {
@@ -37,8 +37,8 @@ app.post("/rides/request", async (req, res) => {
 });
 
 app.get("/rides/:id", async (req, res) => {
-  const rideDAO = new RideDAODatabase();
-  const getRide = new GetRide(rideDAO);
+  const rideRepository = new RideRepositoryDatebase();
+  const getRide = new GetRide(rideRepository);
   const ride = await getRide.execute(req.params.id);
   return res.json(ride);
 });

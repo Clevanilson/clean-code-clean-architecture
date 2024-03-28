@@ -1,20 +1,32 @@
-import { RideDAO } from "./RideDAO";
+import { Ride } from "./Ride";
+import { RideRepository } from "./RideRepository";
 
 export class GetRide {
-  constructor(private readonly rideDAO: RideDAO) {}
+  constructor(private readonly rideRepository: RideRepository) {}
 
   async execute(rideId: string): Promise<Output | undefined> {
-    return await this.rideDAO.getById(rideId);
+    const ride = await this.rideRepository.getById(rideId);
+    if (!ride) return;
+    return {
+      date: ride.date,
+      fromLat: ride.fromLat,
+      fromLong: ride.fromLong,
+      passengerId: ride.passengerId,
+      rideId: ride.rideId,
+      status: ride.status,
+      toLat: ride.toLat,
+      toLong: ride.toLong
+    };
   }
 }
 
-interface Output {
-  passengerId: string;
+type Output = {
   rideId: string;
+  passengerId: string;
   fromLat: number;
   fromLong: number;
   toLat: number;
   toLong: number;
-  status: string;
   date: Date;
-}
+  status: string;
+};

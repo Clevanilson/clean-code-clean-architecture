@@ -1,23 +1,23 @@
 import { query } from "./AccountRepositoryDatabase";
-import { RideDAO } from "./RideDAO";
+import { Ride } from "./Ride";
+import { RideRepository } from "./RideRepository";
 
-export class RideDAODatabase implements RideDAO {
-  async getById(id: string): Promise<any> {
+export class RideRepositoryDatebase implements RideRepository {
+  async getById(id: string): Promise<Ride | undefined> {
     const SQL = `SELECT * FROM cccat15.ride WHERE ride_id = $1;`;
     const rides = await query(SQL, [id]);
-    if (!rides?.rows[0]) return;
-    const [ride] = rides.rows;
-    console.log(ride);
-    return {
-      rideId: ride.ride_id,
-      passengerId: ride.passenger_id,
-      fromLat: Number(ride.from_lat),
-      fromLong: Number(ride.from_long),
-      toLat: Number(ride.to_lat),
-      toLong: Number(ride.to_long),
-      status: ride.status,
-      date: ride.date
-    };
+    const ride = rides?.rows[0];
+    if (!ride) return;
+    return Ride.restore(
+      ride.ride_id,
+      ride.passenger_id,
+      Number(ride.from_lat),
+      Number(ride.from_long),
+      Number(ride.to_lat),
+      Number(ride.to_long),
+      ride.date,
+      ride.status
+    );
   }
 
   async getActiveByPassengerId(passengerId: string): Promise<any> {
@@ -26,9 +26,20 @@ export class RideDAODatabase implements RideDAO {
       WHERE passenger_id = $1 AND status = $2;
     `;
     const rides = await query(SQL, [passengerId, "requested"]);
-    return rides?.rows[0];
+    const ride = rides?.rows[0];
+    if (!ride) return;
+    return Ride.restore(
+      ride.ride_id,
+      ride.passenger_id,
+      Number(ride.from_lat),
+      Number(ride.from_long),
+      Number(ride.to_lat),
+      Number(ride.to_long),
+      ride.date,
+      ride.status
+    );
   }
-  async save(ride: any): Promise<void> {
+  async save(ride: Ride): Promise<void> {
     const SQL = `
       INSERT INTO cccat15.ride 
       (
@@ -50,8 +61,8 @@ export class RideDAODatabase implements RideDAO {
       ride.fromLong.toString(),
       ride.toLat.toString(),
       ride.toLong.toString(),
-      "requested",
-      new Date().toISOString()
+      ride.status,
+      ride.date
     ]);
   }
 }

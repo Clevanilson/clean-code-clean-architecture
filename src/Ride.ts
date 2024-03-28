@@ -9,7 +9,7 @@ export class Ride {
     readonly fromLong: number,
     readonly toLat: number,
     readonly toLong: number,
-    readonly data: Date,
+    readonly date: Date,
     status: string
   ) {
     this.status = status;
