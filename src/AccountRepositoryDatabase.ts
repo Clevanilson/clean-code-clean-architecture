@@ -1,32 +1,10 @@
-import { Client } from "pg";
-import dotenv from "dotenv";
-import crypto from "crypto";
 import { AccountRepository } from "./AccountRepository";
 import { Account } from "./Account";
-
-dotenv.config({ path: ".env.development" });
-
-export async function query(text: string, values?: unknown[]) {
-  const client = new Client({
-    host: process.env.POSTGRES_HOST,
-    database: process.env.POSTGRES_DB,
-    user: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    port: Number(process.env.POSTGRES_PORT)
-  });
-
-  try {
-    await client.connect();
-    const result = await client.query(text, values);
-    return result;
-  } catch (error) {
-    console.error(error);
-  } finally {
-    await client.end();
-  }
-}
+import { DatabaseConnection } from "./DatabaseConnection";
 
 export class AccountRepositoryDatabase implements AccountRepository {
+  constructor(private readonly connection: DatabaseConnection) {}
+
   async save(account: Account): Promise<void> {
     const SQL = `
       INSERT INTO cccat15.account 
@@ -34,7 +12,7 @@ export class AccountRepositoryDatabase implements AccountRepository {
       VALUES
       ($1, $2, $3, $4, $5, $6, $7);
     `;
-    await query(SQL, [
+    await this.connection.query(SQL, [
       account.accountId,
       account.name,
       account.email,
@@ -48,8 +26,8 @@ export class AccountRepositoryDatabase implements AccountRepository {
 
   async getByEmail(email: string): Promise<Account | undefined> {
     const SQL = "SELECT * FROM cccat15.account WHERE email = $1;";
-    const result = await query(SQL, [email]);
-    const account = result?.rows[0];
+    const result = await this.connection.query(SQL, [email]);
+    const account = result?.[0];
     if (!account) return;
     return Account.restore(
       account.account_id,
@@ -64,8 +42,8 @@ export class AccountRepositoryDatabase implements AccountRepository {
 
   async getById(id: string): Promise<Account | undefined> {
     const SQL = "SELECT * FROM cccat15.account WHERE account_id = $1;";
-    const result = await query(SQL, [id]);
-    const account = result?.rows[0];
+    const result = await this.connection.query(SQL, [id]);
+    const account = result?.[0];
     if (!account) return;
     return Account.restore(
       account.account_id,

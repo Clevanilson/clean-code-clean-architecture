@@ -1,4 +1,3 @@
-import { Ride } from "./Ride";
 import { RideRepository } from "./RideRepository";
 
 export class GetRide {

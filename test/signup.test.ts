@@ -1,5 +1,6 @@
 import { AccountRepositoryDatabase } from "../src/AccountRepositoryDatabase";
 import { GetAccountById } from "../src/GetAccount";
+import { PGAdapter } from "../src/PGAdapter";
 import { Signup } from "../src/Signup";
 
 test("Should create a new account for a passenger", async () => {
@@ -98,7 +99,8 @@ test("Should not create an driver account with invalid car plate", async () => {
 });
 
 function setup() {
-  const accountRepository = new AccountRepositoryDatabase();
+  const connection = new PGAdapter();
+  const accountRepository = new AccountRepositoryDatabase(connection);
   const getAccountById = new GetAccountById(accountRepository);
   const sut = new Signup(accountRepository);
   return { sut, getAccountById };

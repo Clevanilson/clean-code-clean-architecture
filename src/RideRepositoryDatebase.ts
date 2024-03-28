@@ -1,12 +1,14 @@
-import { query } from "./AccountRepositoryDatabase";
+import { DatabaseConnection } from "./DatabaseConnection";
 import { Ride } from "./Ride";
 import { RideRepository } from "./RideRepository";
 
 export class RideRepositoryDatebase implements RideRepository {
+  constructor(private readonly connection: DatabaseConnection) {}
+
   async getById(id: string): Promise<Ride | undefined> {
     const SQL = `SELECT * FROM cccat15.ride WHERE ride_id = $1;`;
-    const rides = await query(SQL, [id]);
-    const ride = rides?.rows[0];
+    const rides = await this.connection.query(SQL, [id]);
+    const ride = rides?.[0];
     if (!ride) return;
     return Ride.restore(
       ride.ride_id,
@@ -25,8 +27,8 @@ export class RideRepositoryDatebase implements RideRepository {
       SELECT ride_id FROM cccat15.ride
       WHERE passenger_id = $1 AND status = $2;
     `;
-    const rides = await query(SQL, [passengerId, "requested"]);
-    const ride = rides?.rows[0];
+    const rides = await this.connection.query(SQL, [passengerId, "requested"]);
+    const ride = rides?.[0];
     if (!ride) return;
     return Ride.restore(
       ride.ride_id,
@@ -54,7 +56,7 @@ export class RideRepositoryDatebase implements RideRepository {
       ) 
       VALUES 
       ($1, $2, $3, $4, $5, $6, $7, $8);`;
-    await query(SQL, [
+    await this.connection.query(SQL, [
       ride.rideId,
       ride.passengerId,
       ride.fromLat.toString(),
