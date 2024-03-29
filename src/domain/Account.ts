@@ -1,13 +1,13 @@
 import crypto from "crypto";
-import { validateCpf } from "@/domain/validateCpf";
 import { Name } from "@/domain//Name";
 import { Email } from "@/domain/Email";
+import { CPF } from "@/domain/CPF";
 
 export class Account {
+  private cpf: CPF;
   private email: Email;
   private name: Name;
   accountId: string;
-  cpf: string;
   carPlate?: string;
   isPassenger: boolean;
   isDriver: boolean;
@@ -21,13 +21,12 @@ export class Account {
     isDriver: boolean,
     carPlate?: string
   ) {
-    if (!validateCpf(cpf)) throw new Error("Invalid CPF");
     if (isDriver && !this.isCarPlateValid(carPlate))
       throw new Error("Invalid car plate");
     this.accountId = accountId;
+    this.cpf = new CPF(cpf);
     this.email = new Email(email);
     this.name = new Name(name);
-    this.cpf = cpf;
     this.isDriver = isDriver;
     this.isPassenger = isPassenger;
     this.carPlate = carPlate;
@@ -79,6 +78,10 @@ export class Account {
 
   getEmail(): string {
     return this.email.value;
+  }
+
+  getCPf(): string {
+    return this.cpf.value;
   }
 
   private isCarPlateValid(carPlate?: string): boolean {

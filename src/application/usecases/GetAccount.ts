@@ -10,7 +10,7 @@ export class GetAccountById {
     return {
       name: account.getName(),
       email: account.getEmail(),
-      cpf: account.cpf,
+      cpf: account.getCPf(),
       isDriver: account.isDriver,
       isPassenger: account.isPassenger,
       carPlate: account.carPlate

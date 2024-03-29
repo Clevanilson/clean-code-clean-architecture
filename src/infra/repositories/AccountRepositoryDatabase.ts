@@ -16,7 +16,7 @@ export class AccountRepositoryDatabase implements AccountRepository {
       account.accountId,
       account.getName(),
       account.getEmail(),
-      account.cpf,
+      account.getCPf(),
       account.carPlate,
       account.isPassenger,
       account.isDriver
