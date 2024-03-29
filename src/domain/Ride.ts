@@ -1,7 +1,6 @@
 import crypto from "crypto";
 
 export class Ride {
-  status: string;
   private constructor(
     readonly rideId: string,
     readonly passengerId: string,
@@ -10,10 +9,9 @@ export class Ride {
     readonly toLat: number,
     readonly toLong: number,
     readonly date: Date,
-    status: string
-  ) {
-    this.status = status;
-  }
+    private _status: string,
+    private _driverId?: string
+  ) {}
 
   static create(
     passengerId: string,
@@ -42,7 +40,8 @@ export class Ride {
     toLat: number,
     toLong: number,
     date: Date,
-    status: string
+    status: string,
+    driverId?: string
   ): Ride {
     return new Ride(
       rideId,
@@ -52,7 +51,20 @@ export class Ride {
       toLat,
       toLong,
       date,
-      status
+      status,
+      driverId
     );
+  }
+  get status(): string {
+    return this._status;
+  }
+
+  get driverId(): string | undefined {
+    return this._driverId;
+  }
+
+  accept(driverId: string): void {
+    this._driverId = driverId;
+    this._status = "accepted";
   }
 }

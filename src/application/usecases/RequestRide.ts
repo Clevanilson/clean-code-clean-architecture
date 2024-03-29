@@ -22,7 +22,7 @@ export class RequestRide {
     const activeRide =
       await this.rideRepository.getActiveByPassengerId(passengerId);
     if (activeRide) throw new Error("User has an active ride");
-    this.rideRepository.save(ride);
+    await this.rideRepository.save(ride);
     return { rideId: ride.rideId };
   }
 }
