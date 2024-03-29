@@ -15,7 +15,7 @@ export class AccountRepositoryDatabase implements AccountRepository {
     await this.connection.query(SQL, [
       account.accountId,
       account.getName(),
-      account.email,
+      account.getEmail(),
       account.cpf,
       account.carPlate,
       account.isPassenger,

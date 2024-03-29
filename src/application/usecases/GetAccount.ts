@@ -9,7 +9,7 @@ export class GetAccountById {
     if (!account) return;
     return {
       name: account.getName(),
-      email: account.email,
+      email: account.getEmail(),
       cpf: account.cpf,
       isDriver: account.isDriver,
       isPassenger: account.isPassenger,

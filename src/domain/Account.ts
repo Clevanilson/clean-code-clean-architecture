@@ -1,11 +1,12 @@
 import crypto from "crypto";
 import { validateCpf } from "@/domain/validateCpf";
 import { Name } from "@/domain//Name";
+import { Email } from "@/domain/Email";
 
 export class Account {
+  private email: Email;
   private name: Name;
   accountId: string;
-  email: string;
   cpf: string;
   carPlate?: string;
   isPassenger: boolean;
@@ -20,13 +21,12 @@ export class Account {
     isDriver: boolean,
     carPlate?: string
   ) {
-    if (!this.isEmailValid(email)) throw new Error("Invalid email");
     if (!validateCpf(cpf)) throw new Error("Invalid CPF");
     if (isDriver && !this.isCarPlateValid(carPlate))
       throw new Error("Invalid car plate");
     this.accountId = accountId;
+    this.email = new Email(email);
     this.name = new Name(name);
-    this.email = email;
     this.cpf = cpf;
     this.isDriver = isDriver;
     this.isPassenger = isPassenger;
@@ -77,8 +77,8 @@ export class Account {
     return this.name.value;
   }
 
-  private isEmailValid(email: string): boolean {
-    return !!email.match(/^(.+)@(.+)$/);
+  getEmail(): string {
+    return this.email.value;
   }
 
   private isCarPlateValid(carPlate?: string): boolean {
