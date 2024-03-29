@@ -1,7 +1,7 @@
-import { AccountRepositoryDatabase } from "../src/infra/repositories/AccountRepositoryDatabase";
-import { GetAccountById } from "../src/application/usecases/GetAccount";
-import { PGAdapter } from "../src/infra/database/PGAdapter";
-import { Signup } from "../src/application/usecases/Signup";
+import { AccountRepositoryDatabase } from "../../../src/infra/repositories/AccountRepositoryDatabase";
+import { GetAccountById } from "../../../src/application/usecases/GetAccount";
+import { PGAdapter } from "../../../src/infra/database/PGAdapter";
+import { Signup } from "../../../src/application/usecases/Signup";
 
 test("Should create a new account for a passenger", async () => {
   const input = {
