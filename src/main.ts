@@ -1,12 +1,12 @@
 import { AccountController } from "./AccountController";
-import { AccountRepositoryDatabase } from "./AccountRepositoryDatabase";
+import { AccountRepositoryDatabase } from "./infra/repositories/AccountRepositoryDatabase";
 import { ExpressAdapter } from "./ExpressAdapter";
 import { GetAccountById } from "./application/usecases/GetAccount";
 import { GetRide } from "./application/usecases/GetRide";
 import { PGAdapter } from "./infra/database/PGAdapter";
 import { RequestRide } from "./application/usecases/RequestRide";
 import { RideController } from "./RideController";
-import { RideRepositoryDatebase } from "./RideRepositoryDatebase";
+import { RideRepositoryDatebase } from "./infra/repositories/RideRepositoryDatebase";
 import { Signup } from "./application/usecases/Signup";
 
 const httpServer = new ExpressAdapter();

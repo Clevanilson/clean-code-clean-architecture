@@ -1,4 +1,4 @@
-import { AccountRepositoryDatabase } from "../src/AccountRepositoryDatabase";
+import { AccountRepositoryDatabase } from "../src/infra/repositories/AccountRepositoryDatabase";
 import { GetAccountById } from "../src/application/usecases/GetAccount";
 import { PGAdapter } from "../src/infra/database/PGAdapter";
 import { Signup } from "../src/application/usecases/Signup";

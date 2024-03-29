@@ -1,6 +1,6 @@
 import { AccountRepository } from "./AccountRepository";
-import { Account } from "./domain/Account";
-import { DatabaseConnection } from "./infra/database/DatabaseConnection";
+import { Account } from "../../domain/Account";
+import { DatabaseConnection } from "../database/DatabaseConnection";
 
 export class AccountRepositoryDatabase implements AccountRepository {
   constructor(private readonly connection: DatabaseConnection) {}
