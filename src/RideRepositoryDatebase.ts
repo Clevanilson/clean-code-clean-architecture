@@ -1,4 +1,4 @@
-import { DatabaseConnection } from "./DatabaseConnection";
+import { DatabaseConnection } from "./infra/database/DatabaseConnection";
 import { Ride } from "./domain/Ride";
 import { RideRepository } from "./RideRepository";
 
