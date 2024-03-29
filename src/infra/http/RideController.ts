@@ -1,6 +1,6 @@
-import { GetRide } from "../../application/usecases/GetRide";
-import { HttpServer } from "./HttpServer";
-import { RequestRide } from "../../application/usecases/RequestRide";
+import { GetRide } from "@/application/usecases/GetRide";
+import { HttpServer } from "@/infra/http/HttpServer";
+import { RequestRide } from "@/application/usecases/RequestRide";
 
 export class RideController {
   constructor(

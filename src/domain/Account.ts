@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { validateCpf } from "./validateCpf";
+import { validateCpf } from "@/domain/validateCpf";
 
 export class Account {
   accountId: string;

@@ -1,6 +1,6 @@
-import { DatabaseConnection } from "../database/DatabaseConnection";
-import { Ride } from "../../domain/Ride";
-import { RideRepository } from "./RideRepository";
+import { DatabaseConnection } from "@/infra/database/DatabaseConnection";
+import { Ride } from "@/domain/Ride";
+import { RideRepository } from "@/infra/repositories/RideRepository";
 
 export class RideRepositoryDatebase implements RideRepository {
   constructor(private readonly connection: DatabaseConnection) {}

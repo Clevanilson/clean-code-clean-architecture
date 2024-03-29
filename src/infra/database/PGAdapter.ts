@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import { Client } from "pg";
-import { DatabaseConnection } from "./DatabaseConnection";
+import { DatabaseConnection } from "@/infra/database/DatabaseConnection";
 
 dotenv.config({ path: ".env.development" });
 

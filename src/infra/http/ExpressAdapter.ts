@@ -1,5 +1,5 @@
 import express from "express";
-import { HttpServer } from "./HttpServer";
+import { HttpServer } from "@/infra/http/HttpServer";
 
 const app = express();
 app.use(express.json());

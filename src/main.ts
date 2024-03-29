@@ -1,13 +1,13 @@
-import { AccountController } from "./infra/http/AccountController";
-import { AccountRepositoryDatabase } from "./infra/repositories/AccountRepositoryDatabase";
-import { ExpressAdapter } from "./infra/http/ExpressAdapter";
-import { GetAccountById } from "./application/usecases/GetAccount";
-import { GetRide } from "./application/usecases/GetRide";
-import { PGAdapter } from "./infra/database/PGAdapter";
-import { RequestRide } from "./application/usecases/RequestRide";
-import { RideController } from "./infra/http/RideController";
-import { RideRepositoryDatebase } from "./infra/repositories/RideRepositoryDatebase";
-import { Signup } from "./application/usecases/Signup";
+import { AccountController } from "@/infra/http/AccountController";
+import { AccountRepositoryDatabase } from "@/infra/repositories/AccountRepositoryDatabase";
+import { ExpressAdapter } from "@/infra/http/ExpressAdapter";
+import { GetAccountById } from "@/application/usecases/GetAccount";
+import { GetRide } from "@/application/usecases/GetRide";
+import { PGAdapter } from "@/infra/database/PGAdapter";
+import { RequestRide } from "@/application/usecases/RequestRide";
+import { RideController } from "@/infra/http/RideController";
+import { RideRepositoryDatebase } from "@/infra/repositories/RideRepositoryDatebase";
+import { Signup } from "@/application/usecases/Signup";
 
 const httpServer = new ExpressAdapter();
 const connection = new PGAdapter();
