@@ -1,6 +1,7 @@
-import { AccountDAODatabase } from "../src/AccountDAODatabase";
-import { GetAccountById } from "../src/GetAccount";
-import { Signup } from "../src/Signup";
+import { AccountRepositoryDatabase } from "@/infra/repositories/AccountRepositoryDatabase";
+import { GetAccountById } from "@/application/usecases/GetAccount";
+import { PGAdapter } from "@/infra/database/PGAdapter";
+import { Signup } from "@/application/usecases/Signup";
 
 test("Should create a new account for a passenger", async () => {
   const input = {
@@ -13,10 +14,10 @@ test("Should create a new account for a passenger", async () => {
   const outputSignup = await sut.execute(input);
   expect(outputSignup.accountId).toEqual(expect.any(String));
   const outputGetAccount = await getAccountById.execute(outputSignup.accountId);
-  expect(outputGetAccount.name).toEqual(input.name);
-  expect(outputGetAccount.email).toEqual(input.email);
-  expect(outputGetAccount.cpf).toEqual(input.cpf);
-  expect(outputGetAccount.is_passenger).toEqual(input.isPassenger);
+  expect(outputGetAccount?.name).toEqual(input.name);
+  expect(outputGetAccount?.email).toEqual(input.email);
+  expect(outputGetAccount?.cpf).toEqual(input.cpf);
+  expect(outputGetAccount?.isPassenger).toEqual(input.isPassenger);
 });
 
 test("Should create a new account for a driver", async () => {
@@ -31,11 +32,11 @@ test("Should create a new account for a driver", async () => {
   const outputSignup = await sut.execute(input);
   expect(outputSignup.accountId).toEqual(expect.any(String));
   const outputGetAccount = await getAccountById.execute(outputSignup.accountId);
-  expect(outputGetAccount.name).toEqual(input.name);
-  expect(outputGetAccount.email).toEqual(input.email);
-  expect(outputGetAccount.cpf).toEqual(input.cpf);
-  expect(outputGetAccount.is_driver).toEqual(input.isDriver);
-  expect(outputGetAccount.car_plate).toEqual(input.carPlate);
+  expect(outputGetAccount?.name).toEqual(input.name);
+  expect(outputGetAccount?.email).toEqual(input.email);
+  expect(outputGetAccount?.cpf).toEqual(input.cpf);
+  expect(outputGetAccount?.isDriver).toEqual(input.isDriver);
+  expect(outputGetAccount?.carPlate).toEqual(input.carPlate);
 });
 
 test("Should not create an account with invalid name", async () => {
@@ -98,8 +99,9 @@ test("Should not create an driver account with invalid car plate", async () => {
 });
 
 function setup() {
-  const accountDAO = new AccountDAODatabase();
-  const getAccountById = new GetAccountById(accountDAO);
-  const sut = new Signup(accountDAO);
+  const connection = new PGAdapter();
+  const accountRepository = new AccountRepositoryDatabase(connection);
+  const getAccountById = new GetAccountById(accountRepository);
+  const sut = new Signup(accountRepository);
   return { sut, getAccountById };
 }

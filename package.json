@@ -22,6 +22,7 @@
     "prettier": "^3.2.5",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.3"
   },
   "scripts": {
@@ -34,7 +35,7 @@
     "services:stop": "docker compose -f infra/compose.yaml stop",
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage",
-    "dev": "nodemon src/api.ts"
+    "dev": "nodemon src/main.ts"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
