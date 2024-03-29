@@ -1,5 +1,5 @@
 import { AccountRepository } from "./AccountRepository";
-import { Account } from "./Account";
+import { Account } from "./domain/Account";
 import { DatabaseConnection } from "./DatabaseConnection";
 
 export class AccountRepositoryDatabase implements AccountRepository {

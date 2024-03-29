@@ -1,4 +1,4 @@
-import { Account } from "../../Account";
+import { Account } from "../../domain/Account";
 import { AccountRepository } from "../../AccountRepository";
 
 export class GetAccountById {
