@@ -1,12 +1,15 @@
 import crypto from "crypto";
-import { validateCpf } from "@/domain/validateCpf";
+import { Name } from "@/domain//Name";
+import { Email } from "@/domain/Email";
+import { CPF } from "@/domain/CPF";
+import { CarPlate } from "./CarPlate";
 
 export class Account {
+  private cpf: CPF;
+  private email: Email;
+  private name: Name;
+  private carPlate?: CarPlate;
   accountId: string;
-  name: string;
-  email: string;
-  cpf: string;
-  carPlate?: string;
   isPassenger: boolean;
   isDriver: boolean;
 
@@ -19,18 +22,13 @@ export class Account {
     isDriver: boolean,
     carPlate?: string
   ) {
-    if (!this.isNameValid(name)) throw new Error("Invalid name");
-    if (!this.isEmailValid(email)) throw new Error("Invalid email");
-    if (!validateCpf(cpf)) throw new Error("Invalid CPF");
-    if (isDriver && !this.isCarPlateValid(carPlate))
-      throw new Error("Invalid car plate");
-    this.accountId = accountId;
-    this.name = name;
-    this.email = email;
-    this.cpf = cpf;
+    if (isDriver) this.carPlate = new CarPlate(carPlate ?? "");
+    this.cpf = new CPF(cpf);
+    this.email = new Email(email);
+    this.name = new Name(name);
     this.isDriver = isDriver;
+    this.accountId = accountId;
     this.isPassenger = isPassenger;
-    this.carPlate = carPlate;
   }
 
   static create(
@@ -73,15 +71,19 @@ export class Account {
     );
   }
 
-  private isNameValid(name: string): boolean {
-    return !!name.match(/[a-zA-Z] [a-zA-Z]+/);
+  getName(): string {
+    return this.name.value;
   }
 
-  private isEmailValid(email: string): boolean {
-    return !!email.match(/^(.+)@(.+)$/);
+  getEmail(): string {
+    return this.email.value;
   }
 
-  private isCarPlateValid(carPlate?: string): boolean {
-    return !!carPlate?.match(/[A-Z]{3}[0-9]{4}/);
+  getCPf(): string {
+    return this.cpf.value;
+  }
+
+  getCarPlate(): string | undefined {
+    return this.carPlate?.value;
   }
 }

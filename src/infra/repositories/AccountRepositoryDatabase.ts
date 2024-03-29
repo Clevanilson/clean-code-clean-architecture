@@ -14,10 +14,10 @@ export class AccountRepositoryDatabase implements AccountRepository {
     `;
     await this.connection.query(SQL, [
       account.accountId,
-      account.name,
-      account.email,
-      account.cpf,
-      account.carPlate,
+      account.getName(),
+      account.getEmail(),
+      account.getCPf(),
+      account.getCarPlate(),
       account.isPassenger,
       account.isDriver
     ]);
