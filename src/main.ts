@@ -1,0 +1,22 @@
+import { AccountController } from "./AccountController";
+import { AccountRepositoryDatabase } from "./AccountRepositoryDatabase";
+import { ExpressAdapter } from "./ExpressAdapter";
+import { GetAccountById } from "./GetAccount";
+import { GetRide } from "./GetRide";
+import { PGAdapter } from "./PGAdapter";
+import { RequestRide } from "./RequestRide";
+import { RideController } from "./RideController";
+import { RideRepositoryDatebase } from "./RideRepositoryDatebase";
+import { Signup } from "./Signup";
+
+const httpServer = new ExpressAdapter();
+const connection = new PGAdapter();
+const accountRepository = new AccountRepositoryDatabase(connection);
+const signup = new Signup(accountRepository);
+const getAccountById = new GetAccountById(accountRepository);
+new AccountController(httpServer, signup, getAccountById);
+const rideRepository = new RideRepositoryDatebase(connection);
+const requestRide = new RequestRide(rideRepository, accountRepository);
+const getRide = new GetRide(rideRepository);
+new RideController(httpServer, requestRide, getRide);
+httpServer.listen(3000);

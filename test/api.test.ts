@@ -43,6 +43,7 @@ test("Should request a ride", async () => {
     "http://localhost:3000/rides/request",
     inputRequestRide
   );
+
   expect(responseRequestRide.data.rideId).toEqual(expect.any(String));
   const responseGetRide = await axios.get(
     `http://localhost:3000/rides/${responseRequestRide.data.rideId}`
@@ -69,7 +70,7 @@ test("Should not request a ride if user is not a passenger", async () => {
     inputSignup
   );
   const inputRequestRide = {
-    passengerId: responseSignup.data,
+    passengerId: responseSignup.data.accountId,
     fromLat: -27.584905257808835,
     fromLong: -48.545022195325124,
     toLat: -27.496887588317275,
