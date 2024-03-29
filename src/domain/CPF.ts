@@ -1,9 +1,9 @@
 export class CPF {
   constructor(readonly value: string) {
-    if (!this.isCPFValid(value)) throw new Error("Invalid CPF");
+    if (!this.isValid(value)) throw new Error("Invalid CPF");
   }
 
-  private isCPFValid(rawCpf: string) {
+  private isValid(rawCpf: string) {
     if (!rawCpf) return false;
     const cpf = this.removeNonDigits(rawCpf);
     if (this.isInvalidLength(cpf)) return false;

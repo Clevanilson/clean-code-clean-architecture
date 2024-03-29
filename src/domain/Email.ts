@@ -1,9 +1,9 @@
 export class Email {
   constructor(readonly value: string) {
-    if (!this.isEmailValid(value)) throw new Error("Invalid email");
+    if (!this.isValid(value)) throw new Error("Invalid email");
   }
 
-  private isEmailValid(email: string): boolean {
+  private isValid(email: string): boolean {
     return !!email.match(/^(.+)@(.+)$/);
   }
 }
