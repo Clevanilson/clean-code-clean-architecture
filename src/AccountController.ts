@@ -1,6 +1,6 @@
-import { GetAccountById } from "./GetAccount";
+import { GetAccountById } from "./application/usecases/GetAccount";
 import { HttpServer } from "./HttpServer";
-import { Signup } from "./Signup";
+import { Signup } from "./application/usecases/Signup";
 
 export class AccountController {
   constructor(

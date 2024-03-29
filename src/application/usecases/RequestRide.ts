@@ -1,6 +1,6 @@
-import { AccountRepository } from "./AccountRepository";
-import { RideRepository } from "./RideRepository";
-import { Ride } from "./Ride";
+import { AccountRepository } from "../../AccountRepository";
+import { RideRepository } from "../../RideRepository";
+import { Ride } from "../../Ride";
 
 export class RequestRide {
   constructor(
