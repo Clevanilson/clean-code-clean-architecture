@@ -64,7 +64,13 @@ export class Ride {
   }
 
   accept(driverId: string): void {
+    if (this.status !== "requested") throw new Error("Invalid status");
     this._driverId = driverId;
     this._status = "accepted";
+  }
+
+  start(): void {
+    if (this.status !== "accepted") throw new Error("Invalid status");
+    this._status = "in_progress";
   }
 }
