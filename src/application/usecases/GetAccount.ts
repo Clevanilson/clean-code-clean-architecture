@@ -11,9 +11,9 @@ export class GetAccountById {
       name: account.getName(),
       email: account.getEmail(),
       cpf: account.getCPf(),
+      carPlate: account.getCarPlate(),
       isDriver: account.isDriver,
-      isPassenger: account.isPassenger,
-      carPlate: account.carPlate
+      isPassenger: account.isPassenger
     };
   }
 }

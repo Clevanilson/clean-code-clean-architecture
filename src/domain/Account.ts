@@ -2,13 +2,14 @@ import crypto from "crypto";
 import { Name } from "@/domain//Name";
 import { Email } from "@/domain/Email";
 import { CPF } from "@/domain/CPF";
+import { CarPlate } from "./CarPlate";
 
 export class Account {
   private cpf: CPF;
   private email: Email;
   private name: Name;
+  private carPlate?: CarPlate;
   accountId: string;
-  carPlate?: string;
   isPassenger: boolean;
   isDriver: boolean;
 
@@ -21,15 +22,13 @@ export class Account {
     isDriver: boolean,
     carPlate?: string
   ) {
-    if (isDriver && !this.isCarPlateValid(carPlate))
-      throw new Error("Invalid car plate");
-    this.accountId = accountId;
+    if (isDriver) this.carPlate = new CarPlate(carPlate ?? "");
     this.cpf = new CPF(cpf);
     this.email = new Email(email);
     this.name = new Name(name);
     this.isDriver = isDriver;
+    this.accountId = accountId;
     this.isPassenger = isPassenger;
-    this.carPlate = carPlate;
   }
 
   static create(
@@ -84,7 +83,7 @@ export class Account {
     return this.cpf.value;
   }
 
-  private isCarPlateValid(carPlate?: string): boolean {
-    return !!carPlate?.match(/[A-Z]{3}[0-9]{4}/);
+  getCarPlate(): string | undefined {
+    return this.carPlate?.value;
   }
 }
