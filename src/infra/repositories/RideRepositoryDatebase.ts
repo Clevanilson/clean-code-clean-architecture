@@ -18,7 +18,8 @@ export class RideRepositoryDatebase implements RideRepository {
       Number(ride.to_lat),
       Number(ride.to_long),
       ride.date,
-      ride.status
+      ride.status,
+      ride.driver_id
     );
   }
 
@@ -66,5 +67,17 @@ export class RideRepositoryDatebase implements RideRepository {
       ride.status,
       ride.date
     ]);
+  }
+
+  async update(ride: Ride): Promise<void> {
+    const SQL = `
+      UPDATE cccat15.ride 
+      SET
+        driver_id = $2,
+        status = $3
+      WHERE 
+        ride_id = $1;
+    `;
+    await this.connection.query(SQL, [ride.rideId, ride.driverId, ride.status]);
   }
 }
