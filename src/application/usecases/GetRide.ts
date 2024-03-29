@@ -8,13 +8,13 @@ export class GetRide {
     if (!ride) return;
     return {
       date: ride.date,
-      fromLat: ride.fromLat,
-      fromLong: ride.fromLong,
+      fromLat: ride.from.lat,
+      fromLong: ride.from.long,
       passengerId: ride.passengerId,
       rideId: ride.rideId,
       status: ride.status,
-      toLat: ride.toLat,
-      toLong: ride.toLong,
+      toLat: ride.to.lat,
+      toLong: ride.to.long,
       driverId: ride.driverId
     };
   }

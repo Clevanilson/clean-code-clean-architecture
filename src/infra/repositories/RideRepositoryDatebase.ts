@@ -25,7 +25,7 @@ export class RideRepositoryDatebase implements RideRepository {
 
   async getActiveByPassengerId(passengerId: string): Promise<any> {
     const SQL = `
-      SELECT ride_id FROM cccat15.ride
+      SELECT * FROM cccat15.ride
       WHERE passenger_id = $1 AND status = $2;
     `;
     const rides = await this.connection.query(SQL, [passengerId, "requested"]);
@@ -39,7 +39,8 @@ export class RideRepositoryDatebase implements RideRepository {
       Number(ride.to_lat),
       Number(ride.to_long),
       ride.date,
-      ride.status
+      ride.status,
+      ride.driver_id
     );
   }
   async save(ride: Ride): Promise<void> {
@@ -60,10 +61,10 @@ export class RideRepositoryDatebase implements RideRepository {
     await this.connection.query(SQL, [
       ride.rideId,
       ride.passengerId,
-      ride.fromLat.toString(),
-      ride.fromLong.toString(),
-      ride.toLat.toString(),
-      ride.toLong.toString(),
+      ride.from.lat,
+      ride.from.long,
+      ride.to.lat,
+      ride.to.long,
       ride.status,
       ride.date
     ]);
