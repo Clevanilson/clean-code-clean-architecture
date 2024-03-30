@@ -1,4 +1,4 @@
-import { Ride } from "@/domain/Ride";
+import { Ride } from "@/domain/entities/Ride";
 
 export interface RideRepository {
   save(ride: Ride): Promise<void>;

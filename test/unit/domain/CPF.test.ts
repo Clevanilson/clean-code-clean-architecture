@@ -1,4 +1,4 @@
-import { CPF } from "@/domain/CPF";
+import { CPF } from "@/domain/valueObjects/CPF";
 
 test.each(["97456321558", "71428793860", "87748248800"])(
   "Shoud test a valid CPF: %s",
