@@ -1,3 +1,4 @@
+import { Account } from "@/domain/entities/Account";
 import { Model, model, column } from "@/infra/orm/Model";
 
 @model("cccat15", "account")
@@ -27,5 +28,29 @@ export class AccountModel extends Model {
     this.isDriver = isDriver;
     this.isPassenger = isPassenger;
     this.carPlate = carPlate;
+  }
+
+  static fromAggregate(account: Account): AccountModel {
+    return new AccountModel(
+      account.accountId,
+      account.getName(),
+      account.getEmail(),
+      account.getCPf(),
+      account.isPassenger,
+      account.isDriver,
+      account.getCarPlate()
+    );
+  }
+
+  getAggregate(): Account {
+    return Account.restore(
+      this.account_id,
+      this.name,
+      this.email,
+      this.cpf,
+      this.isPassenger,
+      this.isDriver,
+      this.carPlate
+    );
   }
 }

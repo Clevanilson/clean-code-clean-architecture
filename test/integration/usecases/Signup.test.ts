@@ -2,6 +2,7 @@ import { AccountRepositoryDatabase } from "@/infra/repositories/AccountRepositor
 import { GetAccountById } from "@/application/usecases/GetAccount";
 import { PGAdapter } from "@/infra/database/PGAdapter";
 import { Signup } from "@/application/usecases/Signup";
+import { AccountRepositoryORM } from "@/infra/repositories/AccountRepositoryORM";
 
 test("Should create a new account for a passenger", async () => {
   const input = {
@@ -100,7 +101,7 @@ test("Should not create an driver account with invalid car plate", async () => {
 
 function setup() {
   const connection = new PGAdapter();
-  const accountRepository = new AccountRepositoryDatabase(connection);
+  const accountRepository = new AccountRepositoryORM(connection);
   const getAccountById = new GetAccountById(accountRepository);
   const sut = new Signup(accountRepository);
   return { sut, getAccountById };
