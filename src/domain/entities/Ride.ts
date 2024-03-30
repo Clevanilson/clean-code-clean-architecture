@@ -1,6 +1,6 @@
 import crypto from "crypto";
-import { Coord } from "./Coord";
-import { DistanceCalculator } from "./services/DistanceCalculator";
+import { Coord } from "../valueObjects/Coord";
+import { DistanceCalculator } from "../services/DistanceCalculator";
 
 export class Ride {
   private lastPosition: Coord;

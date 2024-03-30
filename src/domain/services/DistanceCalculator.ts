@@ -1,4 +1,4 @@
-import { Coord } from "../Coord";
+import { Coord } from "@/domain/valueObjects/Coord";
 
 export abstract class DistanceCalculator {
   static calculate(from: Coord, to: Coord): number {

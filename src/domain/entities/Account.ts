@@ -1,8 +1,8 @@
 import crypto from "crypto";
-import { Name } from "@/domain//Name";
-import { Email } from "@/domain/Email";
-import { CPF } from "@/domain/CPF";
-import { CarPlate } from "./CarPlate";
+import { Name } from "@/domain/valueObjects/Name";
+import { Email } from "@/domain/valueObjects/Email";
+import { CPF } from "@/domain/valueObjects/CPF";
+import { CarPlate } from "../valueObjects/CarPlate";
 
 export class Account {
   private cpf: CPF;

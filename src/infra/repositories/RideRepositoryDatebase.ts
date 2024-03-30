@@ -1,5 +1,5 @@
+import { Ride } from "@/domain/entities/Ride";
 import { DatabaseConnection } from "@/infra/database/DatabaseConnection";
-import { Ride } from "@/domain/Ride";
 import { RideRepository } from "@/infra/repositories/RideRepository";
 
 export class RideRepositoryDatebase implements RideRepository {

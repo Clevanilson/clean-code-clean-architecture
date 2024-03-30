@@ -1,4 +1,4 @@
-import { Account } from "@/domain/Account";
+import { Account } from "@/domain/entities/Account";
 import { AccountRepository } from "@/infra/repositories/AccountRepository";
 
 export class Signup {
