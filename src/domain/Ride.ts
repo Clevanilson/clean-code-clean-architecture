@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { Coord } from "./Coord";
+import { DistanceCalculator } from "./services/DistanceCalculator";
 
 export class Ride {
   private lastPosition: Coord;
@@ -110,22 +111,7 @@ export class Ride {
   updatePosition(lat: number, long: number): void {
     if (this.status !== "in_progress") throw new Error("Invalid status");
     const position = new Coord(lat, long);
-    this.distance += this.calculateDistance(this.lastPosition, position);
+    this.distance += DistanceCalculator.calculate(this.lastPosition, position);
     this.lastPosition = position;
-  }
-
-  calculateDistance(from: Coord, to: Coord): number {
-    const earthRadius = 6371;
-    const degreesToRadians = Math.PI / 180;
-    const deltaLat = (to.lat - from.lat) * degreesToRadians;
-    const deltaLon = (to.long - from.long) * degreesToRadians;
-    const a =
-      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-      Math.cos(from.lat * degreesToRadians) *
-        Math.cos(to.lat * degreesToRadians) *
-        Math.sin(deltaLon / 2) *
-        Math.sin(deltaLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return Math.round(earthRadius * c);
   }
 }
