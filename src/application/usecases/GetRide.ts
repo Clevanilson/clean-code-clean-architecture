@@ -1,3 +1,4 @@
+import { Position } from "@/domain/entities/Position";
 import { RideRepository } from "@/infra/repositories/RideRepository";
 
 export class GetRide {
