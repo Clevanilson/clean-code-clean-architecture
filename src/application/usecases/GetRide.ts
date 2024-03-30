@@ -15,7 +15,10 @@ export class GetRide {
       status: ride.status,
       toLat: ride.to.lat,
       toLong: ride.to.long,
-      driverId: ride.driverId
+      driverId: ride.driverId,
+      lastLat: ride.getLastLat(),
+      lastLong: ride.getLastLong(),
+      distance: ride.getDistance()
     };
   }
 }
@@ -30,4 +33,7 @@ type Output = {
   toLong: number;
   date: Date;
   status: string;
+  lastLat: number;
+  lastLong: number;
+  distance: number;
 };
