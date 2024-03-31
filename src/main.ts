@@ -22,5 +22,7 @@ new AccountController(httpServer);
 const rideRepository = new RideRepositoryDatebase(connection);
 const requestRide = new RequestRide(rideRepository, accountRepository);
 const getRide = new GetRide(rideRepository);
-new RideController(httpServer, requestRide, getRide);
+registry.register("requestRide", requestRide);
+registry.register("getRide", getRide);
+new RideController(httpServer);
 httpServer.listen(3000);
