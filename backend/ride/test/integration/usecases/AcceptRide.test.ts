@@ -1,15 +1,13 @@
 import { AcceptRide } from "@/application/usecases/AcceptRide";
 import { GetRide } from "@/application/usecases/GetRide";
 import { RequestRide } from "@/application/usecases/RequestRide";
-import { Signup } from "@/application/usecases/Signup";
-import { StartRide } from "@/application/usecases/StartRide";
 import { PGAdapter } from "@/infra/database/PGAdapter";
-import { AccountRepositoryDatabase } from "@/infra/repositories/AccountRepositoryDatabase";
+import { AccountGatewayHttp } from "@/infra/gateways/AccountGatewayHttp";
 import { RideRepositoryDatebase } from "@/infra/repositories/RideRepositoryDatebase";
 
-test("Should start a ride", async () => {
-  const { getRide, signup, requestRide, sut, acceptRide } = setup();
-  const { accountId: passengerId } = await signup.execute({
+test("Should accept a ride", async () => {
+  const { getRide, accountGateway, requestRide, sut } = setup();
+  const { accountId: passengerId } = await accountGateway.signup({
     name: "Passenger Doe",
     email: `john.passenger${Math.random()}@mail.com`,
     cpf: "11144466610",
@@ -23,27 +21,25 @@ test("Should start a ride", async () => {
     toLong: -48.522234807851476
   };
   const { rideId } = await requestRide.execute(inputRequestRide);
-  const { accountId: driverId } = await signup.execute({
+  const { accountId: driverId } = await accountGateway.signup({
     name: "Driver Doe",
     email: `john.driver${Math.random()}@mail.com`,
     cpf: "11144477735",
     isDriver: true,
     carPlate: "AAA9999"
   });
-  await acceptRide.execute({ rideId, driverId });
-  await sut.execute(rideId);
+  await sut.execute({ rideId, driverId });
   const outputGetRide = await getRide.execute(rideId);
-  expect(outputGetRide?.status).toBe("in_progress");
+  expect(outputGetRide?.driverId).toBe(driverId);
+  expect(outputGetRide?.status).toBe("accepted");
 });
 
 function setup() {
   const connection = new PGAdapter();
-  const accountRepository = new AccountRepositoryDatabase(connection);
   const rideRepository = new RideRepositoryDatebase(connection);
-  const signup = new Signup(accountRepository);
   const getRide = new GetRide(rideRepository);
-  const requestRide = new RequestRide(rideRepository, accountRepository);
-  const acceptRide = new AcceptRide(rideRepository, accountRepository);
-  const sut = new StartRide(rideRepository);
-  return { signup, getRide, requestRide, acceptRide, sut };
+  const accountGateway = new AccountGatewayHttp();
+  const requestRide = new RequestRide(rideRepository, accountGateway);
+  const sut = new AcceptRide(rideRepository);
+  return { accountGateway, getRide, requestRide, sut };
 }

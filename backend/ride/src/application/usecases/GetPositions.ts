@@ -1,4 +1,3 @@
-import { Position } from "@/domain/entities/Position";
 import { PositionRepository } from "@/infra/repositories/PositionRepository";
 
 export class GetPositions {

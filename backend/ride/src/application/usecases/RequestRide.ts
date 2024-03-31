@@ -1,11 +1,11 @@
 import { Ride } from "@/domain/entities/Ride";
-import { AccountRepository } from "@/infra/repositories/AccountRepository";
+import { AccountGateway } from "@/infra/gateways/AccountGateway";
 import { RideRepository } from "@/infra/repositories/RideRepository";
 
 export class RequestRide {
   constructor(
     private readonly rideRepository: RideRepository,
-    private readonly accountRepository: AccountRepository
+    private readonly accountGateway: AccountGateway
   ) {}
 
   async execute(input: Input): Promise<Output> {
@@ -17,7 +17,7 @@ export class RequestRide {
       input.toLong
     );
     const { passengerId } = input;
-    const account = await this.accountRepository.getById(passengerId);
+    const account = await this.accountGateway.getById(passengerId);
     if (!account?.isPassenger) throw new Error("User must be a passenger");
     const activeRide =
       await this.rideRepository.getActiveByPassengerId(passengerId);

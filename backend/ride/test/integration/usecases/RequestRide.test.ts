@@ -1,19 +1,18 @@
 import { GetRide } from "@/application/usecases/GetRide";
 import { RequestRide } from "@/application/usecases/RequestRide";
-import { Signup } from "@/application/usecases/Signup";
 import { PGAdapter } from "@/infra/database/PGAdapter";
-import { AccountRepositoryDatabase } from "@/infra/repositories/AccountRepositoryDatabase";
+import { AccountGatewayHttp } from "@/infra/gateways/AccountGatewayHttp";
 import { RideRepositoryDatebase } from "@/infra/repositories/RideRepositoryDatebase";
 
 test("Should request a ride", async () => {
-  const { getRide, signup, sut } = setup();
+  const { getRide, accountGateway, sut } = setup();
   const inputSignup = {
     name: "Passenger Doe",
     email: `john.passenger${Math.random()}@mail.com`,
     cpf: "11144466610",
     isPassenger: true
   };
-  const outputSignup = await signup.execute(inputSignup);
+  const outputSignup = await accountGateway.signup(inputSignup);
   const inputRequestRide = {
     passengerId: outputSignup.accountId,
     fromLat: -27.584905257808835,
@@ -35,10 +34,9 @@ test("Should request a ride", async () => {
 
 function setup() {
   const connection = new PGAdapter();
-  const accountRepository = new AccountRepositoryDatabase(connection);
   const rideRepository = new RideRepositoryDatebase(connection);
-  const signup = new Signup(accountRepository);
+  const accountGateway = new AccountGatewayHttp();
   const getRide = new GetRide(rideRepository);
-  const sut = new RequestRide(rideRepository, accountRepository);
-  return { signup, getRide, sut };
+  const sut = new RequestRide(rideRepository, accountGateway);
+  return { accountGateway, getRide, sut };
 }
