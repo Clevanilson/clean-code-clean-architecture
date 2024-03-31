@@ -8,13 +8,17 @@ import { RequestRide } from "@/application/usecases/RequestRide";
 import { RideController } from "@/infra/http/RideController";
 import { RideRepositoryDatebase } from "@/infra/repositories/RideRepositoryDatebase";
 import { Signup } from "@/application/usecases/Signup";
+import { Registry } from "./infra/di/Registry";
 
+const registry = Registry.getInstance();
 const httpServer = new ExpressAdapter();
 const connection = new PGAdapter();
 const accountRepository = new AccountRepositoryDatabase(connection);
 const signup = new Signup(accountRepository);
 const getAccountById = new GetAccountById(accountRepository);
-new AccountController(httpServer, signup, getAccountById);
+registry.register("signup", signup);
+registry.register("getAccountById", getAccountById);
+new AccountController(httpServer);
 const rideRepository = new RideRepositoryDatebase(connection);
 const requestRide = new RequestRide(rideRepository, accountRepository);
 const getRide = new GetRide(rideRepository);
