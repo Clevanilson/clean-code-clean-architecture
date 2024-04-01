@@ -22,6 +22,7 @@ export class RideRepositoryDatebase implements RideRepository {
       ride.date,
       ride.ride_id,
       ride.passenger_id,
+      Number(ride.fare),
       ride.driver_id
     );
   }
@@ -46,6 +47,7 @@ export class RideRepositoryDatebase implements RideRepository {
       ride.date,
       ride.ride_id,
       ride.passenger_id,
+      Number(ride.fare),
       ride.driver_id
     );
   }
@@ -63,10 +65,11 @@ export class RideRepositoryDatebase implements RideRepository {
         status,
         date,
         ride_id,
-        passenger_id      
+        passenger_id,
+        fare  
       ) 
       VALUES 
-      ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
+      ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`;
     await this.connection.query(SQL, [
       ride.from.lat,
       ride.from.long,
@@ -78,7 +81,8 @@ export class RideRepositoryDatebase implements RideRepository {
       ride.status,
       ride.date,
       ride.rideId,
-      ride.passengerId
+      ride.passengerId,
+      ride.getFare()
     ]);
   }
 
@@ -90,7 +94,8 @@ export class RideRepositoryDatebase implements RideRepository {
         status = $3,
         last_lat = $4,
         last_long = $5,
-        distance = $6
+        distance = $6,
+        fare = $7
       WHERE 
         ride_id = $1;
     `;
@@ -100,7 +105,8 @@ export class RideRepositoryDatebase implements RideRepository {
       ride.status,
       ride.getLastLat(),
       ride.getLastLong(),
-      ride.getDistance()
+      ride.getDistance(),
+      ride.getFare()
     ]);
   }
 }
