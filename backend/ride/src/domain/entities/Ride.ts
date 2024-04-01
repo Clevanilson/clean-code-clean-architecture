@@ -19,6 +19,7 @@ export class Ride {
     readonly date: Date,
     readonly rideId: string,
     readonly passengerId: string,
+    private fare: number,
     private _driverId?: string
   ) {
     this.from = new Coord(fromLat, fromLong);
@@ -45,7 +46,8 @@ export class Ride {
       "requested",
       new Date(),
       rideId,
-      passengerId
+      passengerId,
+      0
     );
   }
   static restore(
@@ -60,6 +62,7 @@ export class Ride {
     date: Date,
     rideId: string,
     passengerId: string,
+    fare: number,
     driverId?: string
   ): Ride {
     return new Ride(
@@ -74,6 +77,7 @@ export class Ride {
       date,
       rideId,
       passengerId,
+      fare,
       driverId
     );
   }
@@ -97,6 +101,10 @@ export class Ride {
     return this.lastPosition.long;
   }
 
+  getFare(): number {
+    return this.fare;
+  }
+
   accept(driverId: string): void {
     if (this.status !== "requested") throw new Error("Invalid status");
     this._driverId = driverId;
@@ -113,5 +121,15 @@ export class Ride {
     const position = new Coord(lat, long);
     this.distance += DistanceCalculator.calculate(this.lastPosition, position);
     this.lastPosition = position;
+  }
+
+  finish(): void {
+    if (this.status !== "in_progress") throw new Error("Invalid status");
+    if (this.date.getHours() > 22 || this.date.getHours() < 6) {
+      this.fare = this.distance * 3.9;
+    } else {
+      this.fare = this.distance * 2.1;
+    }
+    this._status = "completed";
   }
 }
