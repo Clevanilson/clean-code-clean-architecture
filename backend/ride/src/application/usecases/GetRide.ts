@@ -18,7 +18,8 @@ export class GetRide {
       driverId: ride.driverId,
       lastLat: ride.getLastLat(),
       lastLong: ride.getLastLong(),
-      distance: ride.getDistance()
+      distance: ride.getDistance(),
+      fare: ride.getFare()
     };
   }
 }
@@ -36,4 +37,5 @@ type Output = {
   lastLat: number;
   lastLong: number;
   distance: number;
+  fare?: number;
 };
