@@ -1,6 +1,8 @@
 import crypto from "crypto";
 import { Coord } from "../valueObjects/Coord";
 import { DistanceCalculator } from "../services/DistanceCalculator";
+import { FareCalculator } from "../services/FareCalculator";
+import { FareCalculatorFactory } from "../services/FareCalculatorFactory";
 
 export class Ride {
   private lastPosition: Coord;
@@ -125,11 +127,9 @@ export class Ride {
 
   finish(): void {
     if (this.status !== "in_progress") throw new Error("Invalid status");
-    if (this.date.getHours() > 22 || this.date.getHours() < 6) {
-      this.fare = this.distance * 3.9;
-    } else {
-      this.fare = this.distance * 2.1;
-    }
+    this.fare = FareCalculatorFactory.create(this.date).calculate(
+      this.distance
+    );
     this._status = "completed";
   }
 }
