@@ -4,6 +4,7 @@ import { RequestRide } from "@/application/usecases/RequestRide";
 import { StartRide } from "@/application/usecases/StartRide";
 import { PGAdapter } from "@/infra/database/PGAdapter";
 import { AccountGatewayHttp } from "@/infra/gateways/AccountGatewayHttp";
+import { AxiosAdapter } from "@/infra/http/AxiosAdapter";
 import { RideRepositoryDatebase } from "@/infra/repositories/RideRepositoryDatebase";
 
 test("Should start a ride", async () => {
@@ -37,7 +38,8 @@ test("Should start a ride", async () => {
 
 function setup() {
   const connection = new PGAdapter();
-  const accountGateway = new AccountGatewayHttp();
+  const httpClient = new AxiosAdapter();
+  const accountGateway = new AccountGatewayHttp(httpClient);
   const rideRepository = new RideRepositoryDatebase(connection);
   const getRide = new GetRide(rideRepository);
   const requestRide = new RequestRide(rideRepository, accountGateway);

@@ -6,11 +6,13 @@ import { RideController } from "@/infra/http/RideController";
 import { RideRepositoryDatebase } from "@/infra/repositories/RideRepositoryDatebase";
 import { Registry } from "./infra/di/Registry";
 import { AccountGatewayHttp } from "./infra/gateways/AccountGatewayHttp";
+import { AxiosAdapter } from "./infra/http/AxiosAdapter";
 
 const registry = Registry.getInstance();
 const httpServer = new ExpressAdapter();
 const connection = new PGAdapter();
-const accountGateway = new AccountGatewayHttp();
+const httpClient = new AxiosAdapter();
+const accountGateway = new AccountGatewayHttp(httpClient);
 const rideRepository = new RideRepositoryDatebase(connection);
 const requestRide = new RequestRide(rideRepository, accountGateway);
 const getRide = new GetRide(rideRepository);

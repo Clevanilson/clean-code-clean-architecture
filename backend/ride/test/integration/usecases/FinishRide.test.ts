@@ -6,6 +6,7 @@ import { StartRide } from "@/application/usecases/StartRide";
 import { UpdatePosition } from "@/application/usecases/UpdatePosision";
 import { PGAdapter } from "@/infra/database/PGAdapter";
 import { AccountGatewayHttp } from "@/infra/gateways/AccountGatewayHttp";
+import { AxiosAdapter } from "@/infra/http/AxiosAdapter";
 import { PositionRepositoryDatabase } from "@/infra/repositories/PositionRepositoryDatabase";
 import { RideRepositoryDatebase } from "@/infra/repositories/RideRepositoryDatebase";
 
@@ -30,7 +31,8 @@ async function setup() {
   const connection = new PGAdapter();
   const rideRepository = new RideRepositoryDatebase(connection);
   const positionRepository = new PositionRepositoryDatabase(connection);
-  const accountGateway = new AccountGatewayHttp();
+  const httpClient = new AxiosAdapter();
+  const accountGateway = new AccountGatewayHttp(httpClient);
   const { accountId: passengerId } = await accountGateway.signup({
     name: "Passenger Doe",
     email: `john.passenger${Math.random()}@mail.com`,

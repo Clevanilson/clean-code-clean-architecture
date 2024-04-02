@@ -1,4 +1,5 @@
 import { AccountGatewayHttp } from "@/infra/gateways/AccountGatewayHttp";
+import { AxiosAdapter } from "@/infra/http/AxiosAdapter";
 import axios from "axios";
 
 axios.defaults.validateStatus = () => true;
@@ -87,6 +88,7 @@ test("Should not request a ride if user has an active ride", async () => {
 });
 
 function setup() {
-  const accountGateway = new AccountGatewayHttp();
+  const httpClient = new AxiosAdapter();
+  const accountGateway = new AccountGatewayHttp(httpClient);
   return { accountGateway };
 }
