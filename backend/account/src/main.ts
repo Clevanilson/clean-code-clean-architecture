@@ -5,14 +5,23 @@ import { GetAccountById } from "@/application/usecases/GetAccount";
 import { PGAdapter } from "@/infra/database/PGAdapter";
 import { Signup } from "@/application/usecases/Signup";
 import { Registry } from "@/infra/di/Registry";
+import { RabbitMQAdapter } from "./infra/queue/RabbitMQAdapter";
+import { QueueController } from "./infra/queue/QueueController";
 
-const registry = Registry.getInstance();
-const httpServer = new ExpressAdapter();
-const connection = new PGAdapter();
-const accountRepository = new AccountRepositoryDatabase(connection);
-const signup = new Signup(accountRepository);
-const getAccountById = new GetAccountById(accountRepository);
-registry.register("signup", signup);
-registry.register("getAccountById", getAccountById);
-new AccountController(httpServer);
-httpServer.listen(3000);
+async function main(): Promise<void> {
+  const registry = Registry.getInstance();
+  const httpServer = new ExpressAdapter();
+  const connection = new PGAdapter();
+  const accountRepository = new AccountRepositoryDatabase(connection);
+  const signup = new Signup(accountRepository);
+  const getAccountById = new GetAccountById(accountRepository);
+  const queue = new RabbitMQAdapter();
+  await queue.connect();
+  registry.register("queue", queue);
+  registry.register("signup", signup);
+  registry.register("getAccountById", getAccountById);
+  new AccountController(httpServer);
+  new QueueController(queue);
+  httpServer.listen(3000);
+}
+main();
