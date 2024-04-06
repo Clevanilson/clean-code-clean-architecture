@@ -7,6 +7,8 @@ import { UpdatePosition } from "@/application/usecases/UpdatePosision";
 import { PGAdapter } from "@/infra/database/PGAdapter";
 import { AccountGatewayHttp } from "@/infra/gateways/AccountGatewayHttp";
 import { AxiosAdapter } from "@/infra/http/AxiosAdapter";
+import { Mediator } from "@/infra/mediator/Mediator";
+import { RabbitMQAdapter } from "@/infra/queue/RabbitMQAdapter";
 import { PositionRepositoryDatabase } from "@/infra/repositories/PositionRepositoryDatabase";
 import { RideRepositoryDatebase } from "@/infra/repositories/RideRepositoryDatebase";
 
@@ -33,6 +35,7 @@ async function setup() {
   const positionRepository = new PositionRepositoryDatabase(connection);
   const httpClient = new AxiosAdapter();
   const accountGateway = new AccountGatewayHttp(httpClient);
+  const mediator = new Mediator();
   const { accountId: passengerId } = await accountGateway.signup({
     name: "Passenger Doe",
     email: `john.passenger${Math.random()}@mail.com`,
@@ -64,10 +67,13 @@ async function setup() {
     rideId
   });
   const getRide = new GetRide(rideRepository);
-  const sut = new FinishRide(rideRepository);
+  const queue = new RabbitMQAdapter();
+  await queue.connect();
+  const sut = new FinishRide(rideRepository, queue);
   return {
     rideId,
     getRide,
+    mediator,
     sut
   };
 }
