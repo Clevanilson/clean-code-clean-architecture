@@ -3,8 +3,10 @@ import { Coord } from "../valueObjects/Coord";
 import { DistanceCalculator } from "../services/DistanceCalculator";
 import { FareCalculator } from "../services/FareCalculator";
 import { FareCalculatorFactory } from "../services/FareCalculatorFactory";
+import { RideCompletedEvent } from "../events/RideCompleted";
+import { Aggregate } from "./Aggregate";
 
-export class Ride {
+export class Ride extends Aggregate {
   private lastPosition: Coord;
   readonly from: Coord;
   readonly to: Coord;
@@ -24,6 +26,7 @@ export class Ride {
     private fare: number,
     private _driverId?: string
   ) {
+    super();
     this.from = new Coord(fromLat, fromLong);
     this.lastPosition = new Coord(lastLat, lastLong);
     this.to = new Coord(toLat, toLong);
@@ -131,5 +134,11 @@ export class Ride {
       this.distance
     );
     this._status = "completed";
+    const event = new RideCompletedEvent(
+      this.rideId,
+      "1234546",
+      this.getFare()
+    );
+    this.notify(event);
   }
 }
