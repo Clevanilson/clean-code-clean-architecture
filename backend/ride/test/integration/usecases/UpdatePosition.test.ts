@@ -7,6 +7,7 @@ import { UpdatePosition } from "@/application/usecases/UpdatePosision";
 import { PGAdapter } from "@/infra/database/PGAdapter";
 import { AccountGatewayHttp } from "@/infra/gateways/AccountGatewayHttp";
 import { AxiosAdapter } from "@/infra/http/AxiosAdapter";
+import { RabbitMQAdapter } from "@/infra/queue/RabbitMQAdapter";
 import { PositionRepositoryDatabase } from "@/infra/repositories/PositionRepositoryDatabase";
 import { RideRepositoryDatebase } from "@/infra/repositories/RideRepositoryDatebase";
 
@@ -19,7 +20,7 @@ test("Should update position", async () => {
     acceptRide,
     startRide,
     getPositions
-  } = setup();
+  } = await setup();
   const { accountId: passengerId } = await accountGateway.signup({
     name: "Passenger Doe",
     email: `john.passenger${Math.random()}@mail.com`,
@@ -60,7 +61,7 @@ test("Should update position", async () => {
   expect(outputGetPositions[0]?.rideId).toBe(inputUpdatePosition.rideId);
 });
 
-function setup() {
+async function setup() {
   const connection = new PGAdapter();
   const httpClient = new AxiosAdapter();
   const accountGateway = new AccountGatewayHttp(httpClient);
@@ -68,7 +69,9 @@ function setup() {
   const getRide = new GetRide(rideRepository);
   const requestRide = new RequestRide(rideRepository, accountGateway);
   const acceptRide = new AcceptRide(rideRepository);
-  const startRide = new StartRide(rideRepository);
+  const queue = new RabbitMQAdapter();
+  await queue.connect();
+  const startRide = new StartRide(rideRepository, queue);
   const positionRepository = new PositionRepositoryDatabase(connection);
   const getPositions = new GetPositions(positionRepository);
   const sut = new UpdatePosition(rideRepository, positionRepository);

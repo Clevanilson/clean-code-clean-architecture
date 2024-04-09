@@ -1,0 +1,15 @@
+{
+  "name": "clean-arch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:ride": "npm run dev --prefix backend/ride",
+    "dev:account": "npm run dev --prefix backend/account",
+    "test:ride": "npm run test:watch --prefix backend/ride",
+    "test:account": "npm run test:watch --prefix backend/account"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

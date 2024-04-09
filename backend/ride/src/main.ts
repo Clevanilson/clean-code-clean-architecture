@@ -10,6 +10,7 @@ import { AxiosAdapter } from "./infra/http/AxiosAdapter";
 import { RabbitMQAdapter } from "./infra/queue/RabbitMQAdapter";
 import { ProcessPayment } from "./application/usecases/ProcessPayment";
 import { QueueController } from "./infra/queue/QueueController";
+import { UpdateRideProjectionHandler } from "./application/handler/UpdateRideProjectionHandler";
 
 async function main(): Promise<void> {
   const registry = Registry.getInstance();
@@ -21,12 +22,16 @@ async function main(): Promise<void> {
   const requestRide = new RequestRide(rideRepository, accountGateway);
   const getRide = new GetRide(rideRepository);
   const processPayment = new ProcessPayment();
+  const updateRideProjectionHandler = new UpdateRideProjectionHandler(
+    connection
+  );
   const queue = new RabbitMQAdapter();
   await queue.connect();
   registry.register("queue", queue);
   registry.register("processPayment", processPayment);
   registry.register("requestRide", requestRide);
   registry.register("getRide", getRide);
+  registry.register("updateRideProjectionHandler", updateRideProjectionHandler);
   new RideController(httpServer);
   new QueueController();
   httpServer.listen(3001);

@@ -36,6 +36,8 @@ async function setup() {
   const httpClient = new AxiosAdapter();
   const accountGateway = new AccountGatewayHttp(httpClient);
   const mediator = new Mediator();
+  const queue = new RabbitMQAdapter();
+  await queue.connect();
   const { accountId: passengerId } = await accountGateway.signup({
     name: "Passenger Doe",
     email: `john.passenger${Math.random()}@mail.com`,
@@ -60,15 +62,15 @@ async function setup() {
     carPlate: "AAA9999"
   });
   await new AcceptRide(rideRepository).execute({ rideId, driverId });
-  await new StartRide(rideRepository).execute(rideId);
+
+  await new StartRide(rideRepository, queue).execute(rideId);
   await new UpdatePosition(rideRepository, positionRepository).execute({
     lat: -27.496887588317275,
     long: -48.522234807851476,
     rideId
   });
   const getRide = new GetRide(rideRepository);
-  const queue = new RabbitMQAdapter();
-  await queue.connect();
+
   const sut = new FinishRide(rideRepository, queue);
   return {
     rideId,

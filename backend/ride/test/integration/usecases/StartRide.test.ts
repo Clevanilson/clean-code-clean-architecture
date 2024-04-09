@@ -1,3 +1,5 @@
+import { UpdateRideProjectionHandler } from "@/application/handler/UpdateRideProjectionHandler";
+import { GetRideProjectionQuery } from "@/application/query/GetRideQuery";
 import { AcceptRide } from "@/application/usecases/AcceptRide";
 import { GetRide } from "@/application/usecases/GetRide";
 import { RequestRide } from "@/application/usecases/RequestRide";
@@ -5,10 +7,18 @@ import { StartRide } from "@/application/usecases/StartRide";
 import { PGAdapter } from "@/infra/database/PGAdapter";
 import { AccountGatewayHttp } from "@/infra/gateways/AccountGatewayHttp";
 import { AxiosAdapter } from "@/infra/http/AxiosAdapter";
+import { RabbitMQAdapter } from "@/infra/queue/RabbitMQAdapter";
 import { RideRepositoryDatebase } from "@/infra/repositories/RideRepositoryDatebase";
 
 test("Should start a ride", async () => {
-  const { getRide, accountGateway, requestRide, sut, acceptRide } = setup();
+  const {
+    getRide,
+    accountGateway,
+    requestRide,
+    sut,
+    acceptRide,
+    updateRideProjectionHandler
+  } = setup();
   const { accountId: passengerId } = await accountGateway.signup({
     name: "Passenger Doe",
     email: `john.passenger${Math.random()}@mail.com`,
@@ -32,6 +42,7 @@ test("Should start a ride", async () => {
   });
   await acceptRide.execute({ rideId, driverId });
   await sut.execute(rideId);
+  await updateRideProjectionHandler.execute(rideId);
   const outputGetRide = await getRide.execute(rideId);
   expect(outputGetRide?.status).toBe("in_progress");
 });
@@ -41,9 +52,21 @@ function setup() {
   const httpClient = new AxiosAdapter();
   const accountGateway = new AccountGatewayHttp(httpClient);
   const rideRepository = new RideRepositoryDatebase(connection);
-  const getRide = new GetRide(rideRepository);
+  const getRide = new GetRideProjectionQuery(connection);
   const requestRide = new RequestRide(rideRepository, accountGateway);
   const acceptRide = new AcceptRide(rideRepository);
-  const sut = new StartRide(rideRepository);
-  return { accountGateway, getRide, requestRide, acceptRide, sut };
+  const updateRideProjectionHandler = new UpdateRideProjectionHandler(
+    connection
+  );
+  const queue = new RabbitMQAdapter();
+  queue.connect();
+  const sut = new StartRide(rideRepository, queue);
+  return {
+    accountGateway,
+    getRide,
+    requestRide,
+    acceptRide,
+    sut,
+    updateRideProjectionHandler
+  };
 }

@@ -5,6 +5,7 @@ import { FareCalculator } from "../services/FareCalculator";
 import { FareCalculatorFactory } from "../services/FareCalculatorFactory";
 import { RideCompletedEvent } from "../events/RideCompleted";
 import { Aggregate } from "./Aggregate";
+import { RideStartedEvent } from "../events/RideStarted";
 
 export class Ride extends Aggregate {
   private lastPosition: Coord;
@@ -119,6 +120,7 @@ export class Ride extends Aggregate {
   start(): void {
     if (this.status !== "accepted") throw new Error("Invalid status");
     this._status = "in_progress";
+    this.notify(new RideStartedEvent(this.rideId));
   }
 
   updatePosition(lat: number, long: number): void {

@@ -14,9 +14,9 @@ export class FinishRide {
     const ride = await this.rideRepository.getById(id);
     if (!ride) throw new Error("Ride not found");
     ride.register(RideCompletedEvent.name, async (event) => {
-      await this.rideRepository.update(ride);
       this.queue.publish(RideCompletedEvent.name, event);
     });
     ride.finish();
+    await this.rideRepository.update(ride);
   }
 }
