@@ -8,7 +8,8 @@
     "dev:account": "npm run dev --prefix backend/account",
     "dev:frontend": "npm run dev --prefix frontend",
     "test:ride": "npm run test:watch --prefix backend/ride",
-    "test:account": "npm run test:watch --prefix backend/account"
+    "test:account": "npm run test:watch --prefix backend/account",
+    "test:frontend": "npm run test:unit --prefix frontend"
   },
   "keywords": [],
   "author": "",
